@@ -79,10 +79,14 @@ export const logout = asyncHandler(async(req , res)=>{
         httpOnly: true,
         sameSite: "strict",
         secure: true, // set to false in dev
-        maxAge: 7 * 24 * 60 * 60 * 1000
+        maxAge: 0
     });
 
     res.status(200).json(new ApiResponse(200, null, "User logged out successfully"));
+})
+
+export const updateProfile = asyncHandler(async(req , res)=>{
+    
 })
 
 export const getUserbyId = asyncHandler(async(req , res)=>{
