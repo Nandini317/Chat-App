@@ -1,7 +1,8 @@
 import {ApiError} from '../utils/ApiError.js' ; 
 import {ApiResponse} from "../utils/ApiResponse.js" ; 
 import {asyncHandler} from'../utils/asyncHandler.js' ; 
-import {User} from '../models/user.model.js' ; 
+import {User} from '../models/user.model.js' ;
+import  { uploadOnCloudinary } from '../utils/cloudinary.js'; 
 export const signup = asyncHandler(async(req , res)=>{
     const {fullName , email , password } = req.body ;
     if([fullName , email , password].some((field) =>field.trim() ==="")){
@@ -86,18 +87,51 @@ export const logout = asyncHandler(async(req , res)=>{
 })
 
 export const updateProfile = asyncHandler(async(req , res)=>{
+    const avatarLocalPath = req.file?.path  ; 
+    if(!avatarLocalPath){
+        throw new ApiError(400 , "avatar is required ") ;
+    }
+    const avatar = await uploadOnCloudinary(avatarLocalPath) ;
+    if(!avatar.url){
+        throw new ApiError(400 , 'error while uploading avatar ') ; 
+    } 
+
+    const updatedAvatarUser = await User.findByIdAndUpdate(req.user._id  , 
+        {
+            $set :{
+                avatar : avatar.url 
+            }
+
+        } ,
+        {new : true }).select("-password") ;
+
+    return res.status(200)
+    .json(new ApiResponse(200 ,{updatedAvatarUser} ,"avatar updated successfully " )) ; 
     
 })
 
-export const getUserbyId = asyncHandler(async(req , res)=>{
-    const {userId} = req.body ; 
-    if(!userId){
-        throw new ApiError(400 , "userId is required ") ; 
+export const checkAuth  = asyncHandler(async(req , res)=>{
+    res.status(200).json(new ApiResponse(201 , "user is authenticated and is logged already in ")) ; 
+})
+
+/*const {avatar} = req.file ;
+    const userId  = req.user._id ;
+    if(!avatar){
+        throw new ApiError(400 , "avatar is required ") ;   
     }
-    const user = await User.findById(userId)?.select("-password") ;
+    if(!userId){
+        throw new ApiError(404 , "user not found ") ;
+    }
+    const user = await User.findById(userId) ; 
     if(!user){
         throw new ApiError(404 , "user not found ") ; 
     }
-
-    res.status(200).json(new ApiResponse(201 , {user : user } , "user found successfully")) ; 
-})
+    const uploadResponse = await cloudinary.uploader.upload(avatar) ; 
+    if(!uploadResponse){throw new ApiError(500 , "something went wrong while uploading the image ")}    
+    const updatedUser = await User.findByIdAndUpdate(userId  , {avatar : uploadResponse.secure_url} , {new : true })
+    if(!updatedUser){
+        throw new ApiError(500 , "something went wrong while updating the user ") ; 
+    }
+    return res.status(200).json(new ApiResponse(201 ,"updated Avatar successfully " )) ; 
+*/
+    
