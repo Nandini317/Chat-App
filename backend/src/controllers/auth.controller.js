@@ -46,16 +46,14 @@ export const signup = asyncHandler(async(req , res)=>{
 
 export const login = asyncHandler(async(req , res) =>{
 
-    const {email , password ,fullName} = req.body ; 
-    if(!(fullName || email )){
-        throw new ApiError(400 , "email or fullName is required")
+    const {email , password } = req.body ; 
+    if(!(email )){
+        throw new ApiError(400 , "email is required")
     }
     if(!password){
         throw new ApiError(400 , "password is required ") ; 
     }
-    const user = await User.findOne({
-        $or:[{email} , {fullName}]
-    })
+    const user = await User.findOne({email})
     if(!user){
         throw new ApiError(404,"user not found " ) ; 
     }
@@ -106,12 +104,13 @@ export const updateProfile = asyncHandler(async(req , res)=>{
         {new : true }).select("-password") ;
 
     return res.status(200)
-    .json(new ApiResponse(200 ,{updatedAvatarUser} ,"avatar updated successfully " )) ; 
+    .json(new ApiResponse(200 ,updatedAvatarUser ,"avatar updated successfully " )) ; 
     
 })
 
 export const checkAuth  = asyncHandler(async(req , res)=>{
-    res.status(200).json(new ApiResponse(201 , "user is authenticated and is logged already in ")) ; 
+    const user = await User.findById(req.user._id).select("-password") ;
+    res.status(200).json(new ApiResponse(201 ,user ,"user is authenticated and is logged already in ")) ; 
 })
 
 /*const {avatar} = req.file ;

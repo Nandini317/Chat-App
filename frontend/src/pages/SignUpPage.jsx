@@ -1,6 +1,10 @@
 import React from 'react'
 import { useState } from 'react'
-import { useAuthStore } from '../store/useAuthStore';
+import AuthImagePattern from '../components/AuthImagePattern.jsx';
+import { useAuthStore } from '../store/useAuthStore.js';
+import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare, User } from "lucide-react";
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 function SignUpPage() {
   const [showPassword, setShowPassword] =useState(false) ; 
   const [formData, setFormData] = useState({
@@ -9,11 +13,23 @@ function SignUpPage() {
     password : "" ,
   }) ; 
 
-  const {signup ,isSigningUp} = useAuthStore ;
+  const {signup ,isSigningUp} = useAuthStore() ;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const validateForm = ()=>{}
+  const validateForm = ()=>{
+    if(!formData.fullName.trim())return toast.error("full name is required ") ; 
+    if(!formData.email.trim() || !emailRegex.test(formData.email) )return toast.error("email not valid");
+    if(!formData.password || formData.password.length < 6)return toast.error("password must be at least 6 characters") ;
+    return true ;
+    
+  }
   const handleSubmit = (e) =>{
     e.preventDefault() ;
+    const success = validateForm();
+    if(success){
+      signup(formData) ; 
+
+    }
   }
 
   return (
@@ -53,6 +69,7 @@ function SignUpPage() {
                 />
               </div>
             </div>
+            
 
             <div className="form-control">
               <label className="label">
@@ -83,7 +100,7 @@ function SignUpPage() {
                 <input
                   type={showPassword ? "text" : "password"}
                   className={`input input-bordered w-full pl-10`}
-                  placeholder="••••••••"
+                  placeholder="enter a strong password "
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 />
@@ -111,6 +128,7 @@ function SignUpPage() {
                 "Create Account"
               )}
             </button>
+           
           </form>
 
           <div className="text-center">

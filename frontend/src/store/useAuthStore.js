@@ -1,5 +1,6 @@
 import {create} from "zustand" 
 import { axiosInstance } from "../lib/axios"
+import toast from "react-hot-toast";
 
 export const useAuthStore = create((set)=>({
     authUser:null , 
@@ -27,6 +28,61 @@ export const useAuthStore = create((set)=>({
     }  , 
 
     signup :  async (data)=>{
+       set({isSigningUp:true}) ; 
+       try{
+        const res = await axiosInstance.post("/auth/signup" , data) ; 
+        set({authUser : res.data}) ; 
+        toast.success("Account created successfully") ;
+       } catch (error) {
+        toast.error(error?.response?.data?.message || "signup failed")  ; 
+       }
+       finally{
+        set({isSigningUp : false})
+       }
+    }, 
 
+    logout : async()=>{
+        //cleared cookie in backend,so authUser set to false
+        try{
+            const res = await axiosInstance.post("/auth/logout") ; 
+            set({authUser:null}) ; 
+            toast.success("logged out successfully") ; 
+        }catch(error){
+            toast.error(error?.response?.data?.message || "logout failed") ; 
+        }
+    },
+
+    login : async(data)=>{
+        set({isLoggingIn : true}) ; 
+        try{
+            const res = await axiosInstance.post("/auth/login" , data) ;
+            console.log(res) ; 
+            set({authUser : res.data}) ; 
+            toast.success("logged in successfully") ; 
+        }catch(error){
+            console.log(error)
+            toast.error(error?.response?.data?.message || "login failed")  ; 
+
+        }
+        finally{
+            set({isLoggingIn :false}) ; 
+        }
+    },
+
+    updateProfile : async(data)=>{
+        set({isUpdatingProfile:true}) ; 
+        try {
+            const res = await axiosInstance.patch("/auth/update-profile" , data) ; 
+            set({authUser : res.data}) ; 
+            toast.success("Profile updated successfully") ;
+        } catch (error) {
+             console.log("error in update profile " , error) ;
+            toast.error(error?.response?.data?.message || "Profile update failed") ;
+            
+        }
+        finally{
+            set({isUpdatingProfile :false})
+        }
     }
+
 }))
