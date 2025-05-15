@@ -10,9 +10,10 @@ import { axiosInstance } from './lib/axios.js';
 import { useAuthStore } from './store/useAuthStore.js';
 import {Loader} from "lucide-react" ;
 import { Toaster } from 'react-hot-toast';
+import { useThemeStore } from './store/useThemeStore.js';
 function App() {
   const {authUser , checkAuth ,isCheckingAuth } = useAuthStore() ; 
-
+  const {theme} = useThemeStore() ; 
   useEffect(()=>{
     checkAuth() 
   } , [checkAuth]) ; 
@@ -27,7 +28,7 @@ function App() {
 
   console.log({authUser}) ; 
   return (
-    <>
+    <div data-theme ={theme}>
       <Navbar />
       <Routes>
         <Route path = "/" element = {authUser?<HomePage />: <Navigate to="/login" />} />
@@ -37,7 +38,7 @@ function App() {
         <Route path = "/profile" element = {authUser ? <ProfilePage />: <Navigate to="/login" />} /> 
       </Routes>
       <Toaster/>
-    </>
+    </div>
   )
 }
 
