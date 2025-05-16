@@ -3,7 +3,8 @@ import toast from 'react-hot-toast' ;
 import {axiosInstance} from "../lib/axios.js"
 
 
-export const useChatStore = create((set)=>({
+export const useChatStore = create((set,get)=>({ //get is used inside the store to access the current state or other functions in your store.
+    //In Zustand, store values aren't directly available to other functions/values in the store — that’s why we use get().
     messages :[] ,
     users :[] , 
     selectedUser : null ,
@@ -35,7 +36,7 @@ export const useChatStore = create((set)=>({
             const res = await axiosInstance.get(`/messages/${userId}`);
             console.log("here is the res.data for get messages " , res) ;
         
-            set({messages : res.data}) ;
+            set({messages : res.data.data}) ;
         }
         catch(error){
             toast.error(error.response.data.message) ;
@@ -45,6 +46,19 @@ export const useChatStore = create((set)=>({
         }
     },
     
+    sendMessage: async (messageData) => {
+        console.log("the message data is "  , messageData);
+        const { selectedUser, messages } = get();
+        try {
+          const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, messageData);
+          console.log(res) ;
+          console.log("is messages an array?", Array.isArray(messages));
+          set({ messages: [...messages, res.data.data] });
+        } catch (error) {
+          toast.error(error?.response?.data?.message || "not send message ");
+        }
+      },
+
     //  todo : optimize this later 
     setSelectedUser :(selectedUser) =>set({selectedUser}) ,
 
