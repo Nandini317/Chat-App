@@ -54,6 +54,7 @@ export const useChatStore = create((set,get)=>({ //get is used inside the store 
           console.log(res) ;
           console.log("is messages an array?", Array.isArray(messages));
           set({ messages: [...messages, res.data.data] });
+          console.log("done")
         } catch (error) {
           toast.error(error?.response?.data?.message || "not send message ");
         }

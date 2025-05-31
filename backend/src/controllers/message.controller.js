@@ -52,6 +52,9 @@ export const sendMessage = asyncHandler(async(req,  res)=>{
         text : text , 
         image : ""
     })
+    console.log("the reciever id is " , recieverId) ;
+
+    console.log("the message is " , message) ;
     if(!message){
         throw new ApiError(500 , "message not sent " ) ; 
     }
