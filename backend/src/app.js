@@ -4,11 +4,12 @@ import messageRoutes from "./routes/message.route.js" ;
 import cookieParser from 'cookie-parser'
 import cors from 'cors' ; 
 import dotenv from 'dotenv';
+import {app} from './lib/socket.js'
 dotenv.config();
 
 
 
-const app = express() ; 
+//const app = express() ;  // used this earlier , when we didn't used socket io , as now we are using socket io and created an app using that , we will use that app in the socket io file
 app.use(cookieParser())
 app.use(cors(
     {
