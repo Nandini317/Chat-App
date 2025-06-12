@@ -41,6 +41,7 @@ const Sidebar = () => {
           <span className="text-xs text-zinc-500">({onlineUsers.length - 1} online)</span>
         </div>
       </div>
+      {console.log(filteredUsers)} 
 
       <div className="overflow-y-auto w-full py-3">
         {filteredUsers.map((user) => (
@@ -55,8 +56,8 @@ const Sidebar = () => {
           >
             <div className="relative mx-auto lg:mx-0">
               <img
-                src={user.profilePic || "/avatar.png"}
-                alt={user.name}
+                src={user.avatar || "/avatar.png"}
+                alt={user.fullName}
                 className="size-12 object-cover rounded-full"
               />
               {onlineUsers.includes(user._id) && (

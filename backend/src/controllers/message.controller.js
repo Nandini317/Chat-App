@@ -4,6 +4,7 @@ import {asyncHandler} from'../utils/asyncHandler.js' ;
 import {User} from '../models/user.model.js' ;
 import  { uploadOnCloudinary } from '../utils/cloudinary.js'; 
 import { Message } from '../models/messages.model.js';
+import {io ,  getRecieverSocketId } from '../lib/socket.js';
 
 export const getUsersForSidebar = asyncHandler(async(req , res) =>{
     const loggedinUserId = req.user._id  ;
@@ -60,6 +61,12 @@ export const sendMessage = asyncHandler(async(req,  res)=>{
     }
 
     // TODO  : add socket io functionality to send message to the receiver
+
+    const recieverSocketId = getRecieverSocketId(recieverId) ; 
+    if(recieverSocketId){
+        //user is online  , so send the message to the user in real time 
+        io.to(recieverSocketId).emit("newMessage" ,message ) 
+    }
 
     return res.status(200).json(new ApiResponse(201 , message , "message sent successfully")) ; 
 

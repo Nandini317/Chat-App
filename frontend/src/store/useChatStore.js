@@ -1,6 +1,7 @@
 import {create} from 'zustand';
 import toast from 'react-hot-toast' ; 
 import {axiosInstance} from "../lib/axios.js"
+import { useAuthStore } from './useAuthStore.js';
 
 
 export const useChatStore = create((set,get)=>({ //get is used inside the store to access the current state or other functions in your store.
@@ -60,9 +61,29 @@ export const useChatStore = create((set,get)=>({ //get is used inside the store 
         }
       },
 
-    //  todo : optimize this later 
+      //getmessags is simply used to get the messages of the selected user , but to simulate real time 
+    subscribeToMessages : ()=>{
+        //if there is no selected user , then return
+        const {selectedUser} = get() ; 
+        if(!selectedUser){
+            return ; 
+        }
+        const socket = useAuthStore.getState().socket ; 
+
+ 
+        socket.on("newMessage" , (newMessage)=>{
+            //console.log("new message received : " , newMessage) ;
+            if(newMessage.sender !== selectedUser._id )return ; //if the new message is not from the selected user , then return
+            set({
+                messages : [...get().messages , newMessage],
+            });
+        });
+    }, 
+
+    unsubscribeFromMssages : ()=>{
+        const socket = useAuthStore.getState().socket ; 
+        socket.off("newMessage") ; 
+    } , 
     setSelectedUser :(selectedUser) =>set({selectedUser}) ,
-
-
 
 }))

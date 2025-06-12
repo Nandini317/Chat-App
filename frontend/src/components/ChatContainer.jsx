@@ -7,16 +7,30 @@ import ChatHeader from './ChatHeader';
 import MessageSkeleton from './skeletons/MessageSkeleton';
 import { useAuthStore } from '../store/useAuthStore';
 import { formatMessageTime } from '../lib/utils';
+import { useRef } from 'react';
 
 const ChatContainer = () => {
   const {authUser}  = useAuthStore() ; 
-  const {messages , selectedUser ,isMessagesLoading , getMessages } = useChatStore() ; 
+  const messageEndRef = useRef(null) ; 
+
+  const {messages , selectedUser ,isMessagesLoading , getMessages ,subscribeToMessages , unsubscribeFromMssages} = useChatStore() ; 
 
   useEffect(()=>{
     
     getMessages(selectedUser._id); 
+    subscribeToMessages() ; 
 
-  } ,[selectedUser._id ,getMessages ])
+    return ()=> unsubscribeFromMssages() ; 
+
+  } ,[selectedUser._id ,getMessages , subscribeToMessages, unsubscribeFromMssages]) ;
+
+  useEffect(()=>{
+    if(messageEndRef.current && messages ){
+    messageEndRef.current.scrollIntoView({behavior: "smooth"}) ;
+
+    }
+
+  } , [messages])
 
   if(isMessagesLoading)return(
     <div className='flex-1 flex flex-col overflow-auto'>
@@ -34,11 +48,12 @@ const ChatContainer = () => {
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message)=>(
-          console.log("message is : " , message.sender) ,
-          console.log("authuser is : " , authUser) ,
-    console.log("selectedUser is : " , selectedUser) , 
+
+          //console.log("message is : " , message.sender) ,//console.log("authuser is : " , authUser) ,//console.log("selectedUser is : " , selectedUser) , 
           <div
             key = {message._id}
+            ref = {messageEndRef}
+            // By attaching the ref to every message, you ensure it always points to the last one.
             className={`chat ${message.sender === authUser.data._id ? "chat-end" : "chat-start"}`}
           >
             {/* display image for along the message  */}
