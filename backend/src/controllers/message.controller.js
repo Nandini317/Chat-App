@@ -46,12 +46,16 @@ export const sendMessage = asyncHandler(async(req,  res)=>{
     if(!text || !recieverId || !myId){
         throw new ApiError(400 , "message not sent " ) ; 
     } 
+
+    const imageLocalPath = req.file?.path; 
+    const imageUrl = imageLocalPath ? await uploadOnCloudinary(imageLocalPath) : "" ;
+    
     //TODO : add image upload functionality
     const message = await Message.create({
         sender : myId , 
         receiver : recieverId , 
         text : text , 
-        image : ""
+        image : imageUrl ?imageUrl.url : "" , 
     })
     console.log("the reciever id is " , recieverId) ;
 
