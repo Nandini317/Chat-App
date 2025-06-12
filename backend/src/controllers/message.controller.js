@@ -43,11 +43,15 @@ export const sendMessage = asyncHandler(async(req,  res)=>{
     const { text} = req.body ; 
     const {id : recieverId } = req.params ;
     const myId = req.user._id ; 
-    if(!text || !recieverId || !myId){
+    if( !recieverId || !myId){
         throw new ApiError(400 , "message not sent " ) ; 
     } 
 
+
     const imageLocalPath = req.file?.path; 
+    if(!text && !imageLocalPath){
+        throw new ApiError(400 , "text or image is required to send a message " ) ; 
+    }
     const imageUrl = imageLocalPath ? await uploadOnCloudinary(imageLocalPath) : "" ;
     
     //TODO : add image upload functionality

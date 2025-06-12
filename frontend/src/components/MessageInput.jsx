@@ -6,7 +6,8 @@ import toast from "react-hot-toast";
 
 const MessageInput = () => {
   const [text , setText] = useState("") ; 
-  const [imagePreview  , setImagePreview] = useState(null) ; 
+  const [imagePreview  , setImagePreview] = useState(null) ;
+  const [imageFile, setImageFile] = useState(null); 
   const fileInputRef = useRef(null) ; 
   const {getMessages ,sendMessage} = useChatStore() ; 
 
@@ -16,6 +17,7 @@ const MessageInput = () => {
       toast.error("please select and image file ");
       return ; 
     }
+    setImageFile(file);
     const reader = new FileReader() ; 
     reader.onloadend=() =>{
       setImagePreview(reader.result);
@@ -27,7 +29,7 @@ const MessageInput = () => {
     setImagePreview(null) ;
     if(fileInputRef.current)fileInputRef.current.value = "" ; 
   }
-  const handleSendMessage = async(e)=>{
+  /*const handleSendMessage = async(e)=>{
     e.preventDefault() ; 
     if(!text.trim() && !imagePreview)return ; 
     console.log('here inside handle send message in messageInput.jsx')
@@ -44,7 +46,27 @@ const MessageInput = () => {
     } catch (error) {
       console.log("Failed to send message due to : " , error )  ;
     }
-  }
+  }*/
+
+    const handleSendMessage = async(e)=>{
+      e.preventDefault() ; 
+      if(!text.trim() && !imagePreview)return ; 
+      console.log('here inside handle send message in messageInput.jsx')
+      
+      const formData = new FormData();
+      formData.append("text", text.trim());
+      if (imageFile) formData.append("image", imageFile); // `imageFile` should be the actual File object
+
+      try {
+        await sendMessage(formData); // make sure sendMessage uses fetch/axios to send formData
+        setText("");
+        setImagePreview(null);
+        setImageFile(null); // Reset the image file state
+        if (fileInputRef.current) fileInputRef.current.value = "";
+      } catch (error) {
+        console.log("Failed to send message due to: ", error);
+      }
+    };
 
   return (
     <div className="p-4 w-full">

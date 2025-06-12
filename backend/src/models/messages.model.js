@@ -10,8 +10,7 @@ const messageSchema = new Schema({
         ref : "User"
     } ,
     text:{
-        type:String  ,
-        required :true 
+        type:String  , 
     },
     image : {
         type:String  , 
