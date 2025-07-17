@@ -13,12 +13,12 @@ export const useChatStore = create((set,get)=>({ //get is used inside the store 
     isMessagesLoading : false ,
 
 
-    getUsers : async()=>{
+    getUsers : async(search ='')=>{
         console.log("int the getUser function ")
         set({isUsersLoading :true}) ; 
         try{
             console.log("int the try block of getUser ") ;
-            const res = await axiosInstance.get("/messages/users");
+            const res = await axiosInstance.get(`/users/search?search=${search}`);
             console.log(res) ;
             console.log("here's the res.data : " , res.data)
             set({users : res.data.data}) ;

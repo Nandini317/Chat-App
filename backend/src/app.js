@@ -1,6 +1,7 @@
 import express from "express" ; 
 import authRoutes from "./routes/auth.route.js" ; 
 import messageRoutes from "./routes/message.route.js" ; 
+import userRoutes from "./routes/user.route.js"
 import cookieParser from 'cookie-parser'
 import cors from 'cors' ; 
 import dotenv from 'dotenv';
@@ -20,6 +21,7 @@ app.use(cors(
 app.use(express.json({ limit: '20mb' })) ; 
 app.use(express.urlencoded({extended:true ,  limit: '20mb' })) ; 
 app.use("/api/auth" , authRoutes) ; 
-app.use('/api/messages' , messageRoutes) ; 
+app.use('/api/messages' , messageRoutes) ;
+app.use('/api/users' ,userRoutes ) ;
 
 export default app   ; 
