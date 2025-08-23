@@ -5,7 +5,7 @@ import {User} from "../models/user.model.js"
 
 export const verifyJWT = asyncHandler(async(req, res , next)=>{
     try {
-        const token = req.cookies?.token ||req.header("Authorization")?.replace("Bearer " , "" ) // ho skta hai user request from se nehi header se aai ho 
+        const token = req.cookies?.token ||req.header("Authorization")?.replace("Bearer " , "" ) 
         
     
         if(!token){
