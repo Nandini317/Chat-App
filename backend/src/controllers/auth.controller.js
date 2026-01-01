@@ -113,24 +113,4 @@ export const checkAuth  = asyncHandler(async(req , res)=>{
     res.status(200).json(new ApiResponse(201 ,user ,"user is authenticated and is logged already in ")) ; 
 })
 
-/*const {avatar} = req.file ;
-    const userId  = req.user._id ;
-    if(!avatar){
-        throw new ApiError(400 , "avatar is required ") ;   
-    }
-    if(!userId){
-        throw new ApiError(404 , "user not found ") ;
-    }
-    const user = await User.findById(userId) ; 
-    if(!user){
-        throw new ApiError(404 , "user not found ") ; 
-    }
-    const uploadResponse = await cloudinary.uploader.upload(avatar) ; 
-    if(!uploadResponse){throw new ApiError(500 , "something went wrong while uploading the image ")}    
-    const updatedUser = await User.findByIdAndUpdate(userId  , {avatar : uploadResponse.secure_url} , {new : true })
-    if(!updatedUser){
-        throw new ApiError(500 , "something went wrong while updating the user ") ; 
-    }
-    return res.status(200).json(new ApiResponse(201 ,"updated Avatar successfully " )) ; 
-*/
     
