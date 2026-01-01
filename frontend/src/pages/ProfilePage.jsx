@@ -19,7 +19,7 @@ function ProfilePage() {
 
     try {
       await updateProfile(formData);
-      console.log("done bro finally") // assume this uses axios with FormData
+      
     } catch (err) {
       console.error("Upload error:", err);
     }
