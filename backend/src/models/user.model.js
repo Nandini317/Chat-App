@@ -28,10 +28,9 @@ const userSchema = new Schema({
 } , {timestamps:true}) ; 
 
 userSchema.pre("save" ,async function (next){ //fnctn should not be an arrow function , as we need the context of "this"
-    if(!this.isModified("password")) return next() ; // agr password mein koi changes hi nahi hai to kyu hi update krna baar baar 
-    // like if someone changes avatar , then why to again hash the password ?
+    if(!this.isModified("password")) return next() ; 
 
-    this.password = await bcrypt.hash(this.password ,10 ) // hash(kisko krna hai , kitne rounds of salting )
+    this.password = await bcrypt.hash(this.password ,10 ) 
     next()
 } )
 
