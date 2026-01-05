@@ -6,6 +6,7 @@ import  { uploadOnCloudinary } from '../utils/cloudinary.js';
 import { Message } from '../models/messages.model.js';
 import {io ,  getRecieverSocketId } from '../lib/socket.js';
 
+
 export const getUsersForSidebar = asyncHandler(async(req , res) =>{
     const loggedinUserId = req.user._id  ;
     if(!loggedinUserId){
